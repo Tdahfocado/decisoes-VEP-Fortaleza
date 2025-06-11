@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decisão em Linguagem Simples - Regime Aberto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3d72 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+        
+        .info-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-left: 5px solid #28a745;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+        }
+        
+        .conditions-list {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .condition-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #2c5aa0;
+        }
+        
+        .condition-number {
+            background: #2c5aa0;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+        
+        .contact-info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #17a2b8;
+        }
+        
+        .audio-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 30px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 2px dashed #2c5aa0;
+        }
+        
+        .footer {
+            background: #2c5aa0;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        strong {
+            color: #2c5aa0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏛️ SUA SITUAÇÃO NA JUSTIÇA</h1>
+        <p style="margin: 10px 0 0 0; opacity: 0.9;">Juizado Especial da Comarca de Tauá - CE</p>
+    </div>
+
+    <div class="success-box">
+        <h2 style="margin-top: 0; color: #155724;">✅ SEU PEDIDO FOI APROVADO!</h2>
+        <p><strong>O que isso significa:</strong> Você agora pode cumprir sua pena em <span class="highlight">REGIME ABERTO</span>. Isso quer dizer que você pode sair da prisão, mas precisa seguir algumas regras.</p>
+    </div>
+
+    <div class="info-box">
+        <h3 style="margin-top: 0; color: #2c5aa0;">📋 INFORMAÇÕES DO SEU PROCESSO</h3>
+        <p><strong>Processo número:</strong> {{NUMERO_PROCESSO}}</p>
+        <p><strong>Seu nome:</strong> {{NOME_APENADO}}</p>
+        <p><strong>Data da decisão:</strong> {{DATA_DECISAO}}</p>
+        <p><strong>Sua pena termina em:</strong> {{DATA_TERMINO_PENA}}</p>
+    </div>
+
+    <div class="conditions-list">
+        <h3 style="color: #2c5aa0;">📝 REGRAS QUE VOCÊ DEVE SEGUIR</h3>
+        <p>Para continuar em liberdade, você <strong>DEVE</strong> cumprir todas essas regras:</p>
+
+        <div class="condition-item">
+            <div class="condition-number">1</div>
+            <div>
+                <strong>Horário em casa:</strong> Ficar em casa das 22h às 6h (à noite e madrugada). Nos seus dias de folga, também das 22h às 6h.
+            </div>
+        </div>
+
+        <div class="condition-item">
+            <div class="condition-number">2</div>
+            <div>
+                <strong>Trabalho:</strong> Comprovar todo mês que está trabalhando ou procurando emprego.
+            </div>
+        </div>
+
+        <div class="condition-item">
+            <div class="condition-number">3</div>
+            <div>
+                <strong>Comparecimento mensal:</strong> Ir uma vez por mês ao NUALB (explicado abaixo) a partir de {{MES_ANO_APRESENTACAO}}.
+            </div>
+        </div>
+
+        <div class="condition-item">
+            <div class="condition-number">4</div>
+            <div>
+                <strong>Mudança de endereço:</strong> Se mudar de casa, avisar imediatamente à Justiça.
+            </div>
+        </div>
+
+        <div class="condition-item">
+            <div class="condition-number">5</div>
+            <div>
+                <strong>Não beber:</strong> Não frequentar bares, clubes ou lugares que vendem bebida alcoólica.
+            </div>
+        </div>
+
+        <div class="condition-item">
+            <div class="condition-number">6</div>
+            <div>
+                <strong>Não portar armas:</strong> Não andar com revólver, faca, ou qualquer objeto que possa machucar alguém.
+            </div>
+        </div>
+
+        <div class="condition-item">
+            <div class="condition-number">7</div>
+            <div>
+                <strong>Não viajar:</strong> Não sair da cidade sem pedir autorização à Justiça.
+            </div>
+        </div>
+
+        <div class="condition-item">
+            <div class="condition-number">8</div>
+            <div>
+                <strong>Programa "Um Novo Tempo":</strong> Participar do programa social ligando para (85) 3492-9074.
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-info">
+        <h3 style="margin-top: 0; color: #0c5460;">📍 ONDE VOCÊ DEVE SE APRESENTAR MENSALMENTE</h3>
+        <p><strong>Local:</strong> NUALB - Complexo CISPE</p>
+        <p><strong>Endereço:</strong> Avenida Heráclito Graça, 600, Centro, Fortaleza/CE</p>
+        <p><strong>CEP:</strong> 60.140-060</p>
+        <p><strong>Telefone:</strong> (85) 3101-7720</p>
+        <p><strong>Quando começar:</strong> A partir de {{MES_ANO_APRESENTACAO}}</p>
+    </div>
+
+    <div class="warning-box">
+        <h3 style="margin-top: 0; color: #856404;">⚠️ ATENÇÃO - MUITO IMPORTANTE!</h3>
+        <p><strong>Se você não cumprir essas regras, pode voltar para a prisão.</strong></p>
+        <p>Mantenha sempre seu endereço atualizado e cumpra todos os compromissos.</p>
+    </div>
+
+    <div class="contact-info">
+        <h3 style="margin-top: 0; color: #0c5460;">💰 SOBRE A MULTA</h3>
+        <p>Você tem <strong>10 dias</strong> para pagar sua multa.</p>
+        <p><strong>Se não conseguir pagar:</strong> Procure o NUDEP</p>
+        <p><strong>Endereço NUDEP:</strong> Rua Dr. José Perdigão, 310, Parque Manibura, Fortaleza/CE</p>
+        <p><strong>Telefone:</strong> (85) 3194-5079 ou (85) 98982-7097</p>
+        <p><strong>Horário:</strong> Segunda a sexta, 8h às 17h</p>
+    </div>
+
+    <div class="audio-section">
+        <h3 style="color: #2c5aa0;">🎧 OUÇA ESTA DECISÃO EM ÁUDIO</h3>
+        <p>Escaneie o código abaixo ou clique no link para ouvir esta decisão explicada:</p>
+        
+        <div style="width: 150px; height: 150px; background: #f0f0f0; border: 2px dashed #ccc; margin: 20px auto; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #666; font-size: 14px;">
+            {{QR_CODE_AQUI}}
+        </div>
+        
+        <p><strong>Link direto:</strong> <a href="{{LINK_AUDIO}}" target="_blank">{{LINK_AUDIO}}</a></p>
+    </div>
+
+    <div class="footer">
+        <p><strong>Esta decisão está de acordo com a Recomendação 144/2023 do CNJ sobre Linguagem Simples</strong></p>
+        <p>Juizado Especial da Comarca de Tauá - Estado do Ceará</p>
+        <p>📞 Dúvidas? Entre em contato conosco</p>
+    </div>
+</body>
+</html>

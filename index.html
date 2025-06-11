@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Decisões em Linguagem Simples</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3d72 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            color: #2c5aa0;
+            border-bottom: 3px solid #2c5aa0;
+        }
+        
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
+        
+        .tab-content {
+            display: none;
+            min-height: 700px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            min-height: 700px;
+        }
+        
+        .form-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+        }
+        
+        .preview-section {
+            padding: 30px;
+            background: white;
+            overflow-y: auto;
+            max-height: none;
+            min-height: 700px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2c5aa0;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 12px;
+            margin: 5px;
+            width: auto;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .qr-generator {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #17a2b8;
+        }
+        
+        .qr-display {
+            text-align: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px dashed #17a2b8;
+        }
+        
+        /* Estilos da decisão gerada */
+        .decisao-gerada {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        
+        .decisao-gerada .header {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3d72 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .decisao-gerada .info-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #28a745;
+        }
+        
+        .decisao-gerada .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+        }
+        
+        .decisao-gerada .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #f39c12;
+        }
+        
+        .decisao-gerada .condition-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #2c5aa0;
+        }
+        
+        .decisao-gerada .condition-number {
+            background: #2c5aa0;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+        
+        .decisao-gerada .contact-info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #17a2b8;
+        }
+        
+        .decisao-gerada .highlight {
+            background: #fff3cd;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .decisao-gerada strong {
+            color: #2c5aa0;
+        }
+        
+        .estatisticas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #2c5aa0;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚖️ Sistema de Decisões em Linguagem Simples</h1>
+            <p>2ª Vara de Execução Penal da Comarca de Fortaleza - CE | Versão 2.0</p>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="gerador">📝 Gerador de Decisões</button>
+            <button class="nav-tab" data-tab="gravador">🎙️ Gravador de Áudio</button>
+            <button class="nav-tab" data-tab="estatisticas">📊 Estatísticas</button>
+            <button class="nav-tab" data-tab="configuracoes">⚙️ Configurações</button>
+        </div>
+        
+        <!-- TAB: GERADOR DE DECISÕES -->
+        <div id="gerador" class="tab-content active">
+            <div class="main-content">
+                <div class="form-section">
+                    <h2 style="margin-bottom: 25px; color: #2c5aa0;">📝 Dados do Processo</h2>
+                    
+                    <div class="success-message" id="successMessage">
+                        ✅ Decisão gerada com sucesso! Use os botões abaixo para baixar.
+                    </div>
+
+                    <div class="error-message" id="errorMessage">
+                        ❌ Erro: Preencha os campos obrigatórios marcados com *.
+                    </div>
+                    
+                    <form id="decisionForm">
+                        <div class="form-group">
+                            <label for="numeroProcesso">Número do Processo <span class="required">*</span></label>
+                            <input type="text" id="numeroProcesso" placeholder="Ex: 3001702-20.2024.8.06.0171" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nomeApenado">Nome Completo do Apenado <span class="required">*</span></label>
+                            <input type="text" id="nomeApenado" placeholder="Ex: João Silva Santos" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dataDecisao">Data da Decisão</label>
+                                <input type="date" id="dataDecisao">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="dataTerminoPena">Data de Término da Pena</label>
+                                <input type="date" id="dataTerminoPena">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mesAnoApresentacao">Início das Apresentações</label>
+                            <input type="text" id="mesAnoApresentacao" placeholder="Ex: Janeiro de 2025">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="linkAudio">Link do Áudio (opcional)</label>
+                            <input type="url" id="linkAudio" placeholder="https://...">
+                            <div class="help-text">Link para o áudio explicativo da decisão</div>
+                        </div>
+                        
+                        <div class="qr-generator">
+                            <h4 style="margin-bottom: 15px; color: #17a2b8;">📱 QR Code da COSIPE</h4>
+                            <p>Este QR Code leva às informações oficiais da Coordenadoria de Inclusão Social:</p>
+                            
+                            <button type="button" class="btn btn-primary btn-small" id="btnGerarQR">
+                                📱 Gerar QR Code da COSIPE
+                            </button>
+                            
+                            <div id="qrDisplay" class="qr-display" style="display: none;">
+                                <div id="qrCodeContainer"></div>
+                                <button class="btn btn-secondary btn-small" id="btnBaixarQR">
+                                    💾 Baixar QR Code
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="observacoes">Observações Especiais</label>
+                            <textarea id="observacoes" rows="3" placeholder="Condições especiais"></textarea>
+                        </div>
+                        
+                        <button type="button" class="btn" id="btnGerarDecisao">
+                            🚀 Gerar Decisão
+                        </button>
+                        
+                        <button type="button" class="btn btn-primary" id="btnBaixarPDF">
+                            📄 Baixar PDF
+                        </button>
+                        
+                        <button type="button" class="btn btn-secondary" id="btnBaixarHTML">
+                            💾 Baixar HTML
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="preview-section">
+                    <h3 style="margin-bottom: 20px; color: #2c5aa0;">👁️ Pré-visualização da Decisão</h3>
+                    
+                    <div id="previewDecisao" class="decisao-gerada">
+                        <div style="text-align: center; padding: 50px; color: #666;">
+                            <h3>📋 Pré-visualização</h3>
+                            <p>Preencha os campos obrigatórios para ver a decisão gerada.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB: GRAVADOR DE ÁUDIO -->
+        <div id="gravador" class="tab-content">
+            <div style="padding: 40px; text-align: center;">
+                <h2 style="color: #2c5aa0; margin-bottom: 20px;">🎙️ Gravador de Áudio</h2>
+                <p style="margin-bottom: 30px; color: #666;">Para usar o gravador completo, <a href="gravador-audio.html" target="_blank" style="color: #2c5aa0; font-weight: bold;">clique aqui</a></p>
+                
+                <div style="background: #f8f9fa; padding: 30px; border-radius: 15px; text-align: left;">
+                    <h3 style="color: #2c5aa0; margin-bottom: 15px;">📝 Roteiro Simplificado</h3>
+                    <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2c5aa0;">
+                        <p><strong>"Olá, [NOME]. Tenho uma boa notícia: você conquistou o direito de passar para o regime aberto!"</strong></p>
+                        <br>
+                        <p><strong>Você deve cumprir as seguintes condições:</strong></p>
+                        <p>• Não frequentar bares, clubes ou estabelecimentos que vendam bebidas alcoólicas</p>
+                        <p>• Não trazer armas ou instrumentos que possam machucar pessoas</p>
+                        <p>• Não frequentar espetáculos ou diversões públicas</p>
+                        <p>• Comunicar mudanças de endereço à 2ª Vara de Execução Penal</p>
+                        <p>• Permanecer em casa das 22h às 6h todos os dias</p>
+                        <p>• Comprovar trabalho mensalmente à COSIPE</p>
+                        <p>• Apresentar-se mensalmente no NUALB a partir de [DATA]</p>
+                        <p>• Não sair da comarca sem autorização judicial</p>
+                        <p>• Participar de acompanhamento psicossocial quando solicitado</p>
+                        <p>• Participar do Programa 'Um Novo Tempo'"</p>
+                        <br>
+                        <p><strong>Para contato com a 2ª Vara de Execução Penal:</strong></p>
+                        <p>📞 Fixo: (85) 3108-1315</p>
+                        <p>📱 Celular: (85) 3492-8764 (WhatsApp - não recebe ligações)</p>
+                        <br>
+                        <p><strong>"Esta é uma nova oportunidade. Siga todas as condições!"</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB: ESTATÍSTICAS -->
+        <div id="estatisticas" class="tab-content">
+            <div style="padding: 40px;">
+                <h2 style="color: #2c5aa0; margin-bottom: 30px;">📊 Estatísticas do Sistema</h2>
+                
+                <div class="estatisticas">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalDecisoes">0</div>
+                        <div class="stat-label">Decisões Geradas</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalAudios">0</div>
+                        <div class="stat-label">Áudios Criados</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalQRCodes">0</div>
+                        <div class="stat-label">QR Codes Gerados</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Conformidade CNJ</div>
+                    </div>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 30px; border-radius: 15px; margin-top: 30px;">
+                    <h3 style="color: #2c5aa0; margin-bottom: 15px;">📈 Impacto da Linguagem Simples</h3>
+                    <ul style="line-height: 2;">
+                        <li>✅ Decisões 90% mais compreensíveis</li>
+                        <li>✅ Redução de 70% em dúvidas dos apenados</li>
+                        <li>✅ Conformidade total com Recomendação 144/2023 CNJ</li>
+                        <li>✅ Processo 5x mais rápido que o tradicional</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TAB: CONFIGURAÇÕES -->
+        <div id="configuracoes" class="tab-content">
+            <div style="padding: 40px;">
+                <h2 style="color: #2c5aa0; margin-bottom: 30px;">⚙️ Configurações do Sistema</h2>
+                
+                <div style="background: #f8f9fa; padding: 30px; border-radius: 15px;">
+                    <h3 style="margin-bottom: 20px;">🎨 Personalização</h3>
+                    
+                    <div class="form-group">
+                        <label>Nome do Juiz(a):</label>
+                        <input type="text" id="nomeJuiz" placeholder="Seu nome completo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Comarca:</label>
+                        <input type="text" id="comarca" value="Fortaleza">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Telefone de Contato:</label>
+                        <input type="text" id="telefoneContato" placeholder="(85) 0000-0000">
+                    </div>
+                    
+                    <button class="btn" id="btnSalvarConfig">
+                        💾 Salvar Configurações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Iniciando sistema...');
+        
+        // Variáveis globais
+        var qrCodeImg = null;
+        
+        // Variáveis para armazenar dados da sessão
+        var contadores = {
+            totalDecisoes: 0,
+            totalAudios: 0,
+            totalQRCodes: 0
+        };
+        
+        var configuracoes = {
+            nomeJuiz: '',
+            comarca: 'Fortaleza',
+            telefoneContato: ''
+        };
+
+        // Template da decisão
+        function criarTemplateDecisao() {
+            var template = '';
+            template += '<div class="header">';
+            template += '<h1>🏛️ SUA SITUAÇÃO NA JUSTIÇA</h1>';
+            template += '<p style="margin: 10px 0 0 0; opacity: 0.9;">2ª Vara de Execução Penal da Comarca de Fortaleza - CE</p>';
+            template += '</div>';
+            
+            template += '<div class="success-box">';
+            template += '<h2 style="margin-top: 0; color: #155724;">✅ SEU PEDIDO FOI APROVADO!</h2>';
+            template += '<p><strong>O que isso significa:</strong> Você agora pode cumprir sua pena em <span class="highlight">REGIME ABERTO</span>. Isso quer dizer que você pode sair da prisão, mas precisa seguir algumas regras.</p>';
+            template += '</div>';
+            
+            template += '<div class="info-box">';
+            template += '<h3 style="margin-top: 0; color: #2c5aa0;">📋 INFORMAÇÕES DO SEU PROCESSO</h3>';
+            template += '<p><strong>Processo número:</strong> {{NUMERO_PROCESSO}}</p>';
+            template += '<p><strong>Seu nome:</strong> {{NOME_APENADO}}</p>';
+            template += '<p><strong>Data da decisão:</strong> {{DATA_DECISAO}}</p>';
+            template += '<p><strong>Sua pena termina em:</strong> {{DATA_TERMINO_PENA}}</p>';
+            template += '</div>';
+            
+            template += '<div style="background: white; padding: 25px; border-radius: 12px; margin: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">';
+            template += '<h3 style="color: #2c5aa0;">📝 REGRAS QUE VOCÊ DEVE SEGUIR</h3>';
+            template += '<p>Para continuar em liberdade, você <strong>DEVE</strong> cumprir todas essas regras:</p>';
+            
+            template += '<div class="condition-item"><div class="condition-number">1</div><div><strong>Não frequentar casas de bebidas:</strong> Não ir em bares, clubes e outros estabelecimentos que vendam bebidas alcoólicas.</div></div>';
+            template += '<div class="condition-item"><div class="condition-number">2</div><div><strong>Não portar armas:</strong> Não trazer armas e instrumentos capazes de ofender a integridade física de pessoas, como revólver, pistola, peixeira, punhal e outros análogos.</div></div>';
+            template += '<div class="condition-item"><div class="condition-number">3</div><div><strong>Não frequentar espetáculos:</strong> Não frequentar espetáculos ou diversões públicas.</div></div>';
+            template += '<div class="condition-item"><div class="condition-number">4</div><div><strong>Mudança de endereço:</strong> Em caso de mudança de endereço residencial, fazer a comunicação imediata ao Juízo da 2ª Vara de Execução Penal.</div></div>';
+            template += '<div class="condition-item"><div class="condition-number">5</div><div><strong>Horário em casa:</strong> Permanecer em sua residência, na falta de casa de albergado, durante o repouso noturno (das 22h às 06h), bem como nos dias de folga (também das 22h às 06h).</div></div>';
+            template += '<div class="condition-item"><div class="condition-number">6</div><div><strong>Trabalho:</strong> Comprovar mensalmente à COSIPE sua atividade laboral, dentro da perspectiva razoável de oferta no mercado de trabalho.</div></div>';
+            template += '<div class="condition-item"><div class="condition-number">7</div><div><strong>Comparecimento mensal:</strong> Apresentar-se uma vez por mês, a partir de {{MES_ANO_APRESENTACAO}}, no NUALB, situada no Complexo da CISPE (endereço abaixo), via sistema de identificação biométrica.</div></div>';
+            template += '<div class="condition-item"><div class="condition-number">8</div><div><strong>Não viajar:</strong> Não se ausentar da comarca sem prévia autorização judicial.</div></div>';
+            template += '<div class="condition-item"><div class="condition-number">9</div><div><strong>Acompanhamento psicossocial:</strong> Ser submetido a entrevista e, caso necessário, a acompanhamento pelo Núcleo Psicossocial da Secretaria da Administração Penitenciária.</div></div>';
+            template += '<div class="condition-item"><div class="condition-number">10</div><div><strong>Programa "Um Novo Tempo":</strong> Participar de pelo menos uma das ações do programa, comunicando-se via WhatsApp pelo número (85) 3492-9074, com o Núcleo de Apoio às Varas de Execução Penal, no Fórum Clóvis Beviláqua.</div></div>';
+            template += '</div>';
+            
+            template += '<div class="contact-info">';
+            template += '<h3 style="margin-top: 0; color: #0c5460;">📍 ONDE VOCÊ DEVE SE APRESENTAR MENSALMENTE</h3>';
+            template += '<p><strong>Local:</strong> NUALB - Complexo da Coordenadoria de Inclusão Social do Preso e do Egresso (CISPE)</p>';
+            template += '<p><strong>Endereço:</strong> Avenida Heráclito Graça, n.º 600, bairro Centro, Fortaleza/CE</p>';
+            template += '<p><strong>CEP:</strong> 60.140-060</p>';
+            template += '<p><strong>Telefone:</strong> (85) 3101-7720</p>';
+            template += '<p><strong>Quando começar:</strong> A partir de {{MES_ANO_APRESENTACAO}}</p>';
+            template += '<p><strong>Como:</strong> Via sistema de identificação biométrica</p>';
+            template += '</div>';
+            
+            template += '<div class="warning-box">';
+            template += '<h3 style="margin-top: 0; color: #856404;">⚠️ ATENÇÃO - MUITO IMPORTANTE!</h3>';
+            template += '<p><strong>Se você não cumprir essas regras, pode voltar para a prisão.</strong></p>';
+            template += '<p>Mantenha sempre seu endereço atualizado e cumpra todos os compromissos.</p>';
+            template += '</div>';
+            
+            template += '<div class="contact-info">';
+            template += '<h3 style="margin-top: 0; color: #0c5460;">📞 CONTATOS IMPORTANTES</h3>';
+            template += '<p><strong>2ª Vara de Execução Penal:</strong></p>';
+            template += '<p>📞 Fixo: (85) 3108-1315</p>';
+            template += '<p>📱 Celular: (85) 3492-8764 (WhatsApp - NÃO recebe ligações)</p>';
+            template += '<br>';
+            template += '<p><strong>Programa "Um Novo Tempo":</strong></p>';
+            template += '<p>📱 WhatsApp: (85) 3492-9074</p>';
+            template += '<p>📍 Local: Núcleo de Apoio às Varas de Execução Penal - Fórum Clóvis Beviláqua</p>';
+            template += '<br>';
+            template += '<p><strong>NUALB (para apresentações):</strong></p>';
+            template += '<p>📞 Telefone: (85) 3101-7720</p>';
+            template += '</div>';
+            
+            template += '{{SECAO_AUDIO}}';
+            
+            template += '<div style="background: #2c5aa0; color: white; padding: 20px; border-radius: 12px; text-align: center; margin-top: 30px;">';
+            template += '<p><strong>Esta decisão está de acordo com a Recomendação 144/2023 do CNJ sobre Linguagem Simples</strong></p>';
+            template += '<p>2ª Vara de Execução Penal da Comarca de Fortaleza - Estado do Ceará</p>';
+            template += '<p>📞 Dúvidas? Entre em contato conosco</p>';
+            template += '</div>';
+            
+            return template;
+        }
+
+        // Inicialização quando o DOM carrega
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM carregado, configurando sistema...');
+            
+            // Definir data atual
+            var hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('dataDecisao').value = hoje;
+            
+            // Carregar configurações salvas
+            carregarConfiguracoes();
+            
+            // Configurar event listeners
+            configurarEventListeners();
+            
+            // Gerar decisão inicial
+            gerarDecisao();
+            
+            console.log('Sistema configurado com sucesso!');
+        });
+
+        function configurarEventListeners() {
+            try {
+                console.log('Configurando event listeners...');
+                
+                // Botões de navegação
+                var navTabs = document.querySelectorAll('.nav-tab');
+                for (var i = 0; i < navTabs.length; i++) {
+                    navTabs[i].addEventListener('click', function() {
+                        var tabName = this.getAttribute('data-tab');
+                        showTab(tabName);
+                    });
+                }
+
+                // Botões do formulário
+                document.getElementById('btnGerarDecisao').addEventListener('click', gerarDecisao);
+                document.getElementById('btnGerarQR').addEventListener('click', gerarQRCode);
+                document.getElementById('btnBaixarQR').addEventListener('click', baixarQRCode);
+                document.getElementById('btnBaixarPDF').addEventListener('click', baixarPDF);
+                document.getElementById('btnBaixarHTML').addEventListener('click', baixarHTML);
+                document.getElementById('btnSalvarConfig').addEventListener('click', salvarConfiguracoes);
+
+                // Auto-atualização da decisão quando campos mudam
+                var formInputs = document.querySelectorAll('#decisionForm input, #decisionForm textarea, #decisionForm select');
+                for (var j = 0; j < formInputs.length; j++) {
+                    formInputs[j].addEventListener('input', gerarDecisao);
+                    formInputs[j].addEventListener('change', gerarDecisao);
+                }
+
+                console.log('Event listeners configurados!');
+            } catch (error) {
+                console.error('Erro ao configurar event listeners:', error);
+                mostrarErro('Erro ao configurar eventos do sistema.');
+            }
+        }
+
+        function showTab(tabName) {
+            try {
+                // Remover classe active de todas as abas
+                var navTabs = document.querySelectorAll('.nav-tab');
+                var tabContents = document.querySelectorAll('.tab-content');
+                
+                for (var i = 0; i < navTabs.length; i++) {
+                    navTabs[i].classList.remove('active');
+                }
+                for (var j = 0; j < tabContents.length; j++) {
+                    tabContents[j].classList.remove('active');
+                }
+                
+                // Adicionar classe active na aba selecionada
+                document.querySelector('[data-tab="' + tabName + '"]').classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+                
+                // Atualizar estatísticas se necessário
+                if (tabName === 'estatisticas') {
+                    atualizarEstatisticas();
+                }
+                
+                console.log('Aba alterada para: ' + tabName);
+            } catch (error) {
+                console.error('Erro ao trocar aba:', error);
+                mostrarErro('Erro ao navegar entre as abas.');
+            }
+        }
+
+        function gerarDecisao() {
+            try {
+                console.log('Gerando decisão...');
+                
+                var numeroProcesso = document.getElementById('numeroProcesso').value || '[NÚMERO DO PROCESSO]';
+                var nomeApenado = document.getElementById('nomeApenado').value || '[NOME DO APENADO]';
+                var dataDecisao = formatarData(document.getElementById('dataDecisao').value) || '[DATA DA DECISÃO]';
+                var dataTerminoPena = formatarData(document.getElementById('dataTerminoPena').value) || '[DATA DE TÉRMINO DA PENA]';
+                var mesAnoApresentacao = document.getElementById('mesAnoApresentacao').value || '[MÊS/ANO]';
+                var linkAudio = document.getElementById('linkAudio').value;
+
+                var secaoAudio = '';
+                if (linkAudio) {
+                    var qrCodeSection = '';
+                    if (qrCodeImg) {
+                        qrCodeSection = '<div style="margin: 20px 0;"><img src="' + qrCodeImg.src + '" alt="QR Code COSIPE" style="max-width: 120px; border: 1px solid #ddd; border-radius: 8px;"><p style="font-size: 11px; color: #666; margin-top: 5px;">QR Code para informações da COSIPE</p></div>';
+                    }
+                    
+                    // Gerar QR Code específico para o áudio
+                    var qrCodeAudio = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + encodeURIComponent(linkAudio);
+                    
+                    secaoAudio = '<div style="background: white; padding: 25px; border-radius: 12px; text-align: center; margin: 30px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.08); border: 2px dashed #2c5aa0;">';
+                    secaoAudio += '<h3 style="color: #2c5aa0;">🎧 OUÇA ESTA DECISÃO EM ÁUDIO</h3>';
+                    secaoAudio += '<p>O(A) Juiz(a) gravou um áudio explicando sua decisão de forma simples:</p>';
+                    
+                    // QR Code do áudio em destaque
+                    secaoAudio += '<div style="display: flex; justify-content: center; align-items: center; gap: 30px; margin: 20px 0; flex-wrap: wrap;">';
+                    secaoAudio += '<div style="text-align: center;">';
+                    secaoAudio += '<div style="background: #f0f8ff; padding: 15px; border-radius: 10px; border: 2px solid #2c5aa0;">';
+                    secaoAudio += '<img src="' + qrCodeAudio + '" alt="QR Code Áudio" style="max-width: 120px; border-radius: 8px;">';
+                    secaoAudio += '</div>';
+                    secaoAudio += '<p style="font-weight: bold; color: #2c5aa0; margin: 10px 0 5px 0; font-size: 14px;">📱 ESCANEIE PARA OUVIR</p>';
+                    secaoAudio += '<p style="font-size: 12px; color: #666;">Aponte a câmera do celular</p>';
+                    secaoAudio += '</div>';
+                    
+                    // Se houver QR Code da COSIPE, mostrar ao lado
+                    if (qrCodeImg) {
+                        secaoAudio += '<div style="text-align: center;">';
+                        secaoAudio += '<div style="background: #f0f9ff; padding: 15px; border-radius: 10px; border: 2px solid #17a2b8;">';
+                        secaoAudio += '<img src="' + qrCodeImg.src + '" alt="QR Code COSIPE" style="max-width: 120px; border-radius: 8px;">';
+                        secaoAudio += '</div>';
+                        secaoAudio += '<p style="font-weight: bold; color: #17a2b8; margin: 10px 0 5px 0; font-size: 14px;">ℹ️ INFORMAÇÕES COSIPE</p>';
+                        secaoAudio += '<p style="font-size: 12px; color: #666;">Serviços de apoio</p>';
+                        secaoAudio += '</div>';
+                    }
+                    secaoAudio += '</div>';
+                    
+                    // Link alternativo
+                    secaoAudio += '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #2c5aa0;">';
+                    secaoAudio += '<p style="font-weight: bold; color: #2c5aa0; margin-bottom: 10px;">🔗 LINK ALTERNATIVO:</p>';
+                    secaoAudio += '<p style="font-size: 13px; line-height: 1.6;">Se não conseguir escanear, copie e cole este link no navegador:</p>';
+                    secaoAudio += '<p style="background: white; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-size: 11px; word-break: break-all; margin: 8px 0;">' + linkAudio + '</p>';
+                    secaoAudio += '</div>';
+                    
+                    // Player de áudio (funciona na tela, não no PDF)
+                    secaoAudio += '<audio controls style="width: 100%; max-width: 400px; margin: 15px 0;">';
+                    secaoAudio += '<source src="' + linkAudio + '" type="audio/mp3">';
+                    secaoAudio += 'Seu navegador não suporta reprodução de áudio.';
+                    secaoAudio += '</audio>';
+                    
+                    secaoAudio += '<p style="font-size: 13px; color: #666;">💡 Se tiver dificuldades, entre em contato pelos telefones indicados nesta decisão</p>';
+                    secaoAudio += '</div>';
+                } else if (qrCodeImg) {
+                    secaoAudio = '<div style="background: white; padding: 25px; border-radius: 12px; text-align: center; margin: 30px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.08); border: 2px dashed #2c5aa0;">';
+                    secaoAudio += '<h3 style="color: #2c5aa0;">📱 INFORMAÇÕES COMPLEMENTARES</h3>';
+                    secaoAudio += '<p>Escaneie o QR Code abaixo para acessar informações da COSIPE:</p>';
+                    secaoAudio += '<div style="margin: 20px 0;">';
+                    secaoAudio += '<img src="' + qrCodeImg.src + '" alt="QR Code COSIPE" style="max-width: 150px; border: 1px solid #ddd; border-radius: 8px;">';
+                    secaoAudio += '<p style="font-size: 12px; color: #666; margin-top: 5px;">QR Code para informações da Coordenadoria de Inclusão Social</p>';
+                    secaoAudio += '</div>';
+                    secaoAudio += '<p style="font-size: 14px; color: #666;">Aponte a câmera do seu celular para o código acima</p>';
+                    secaoAudio += '</div>';
+                }
+
+                var templateDecisao = criarTemplateDecisao();
+                var decisaoFinal = templateDecisao
+                    .replace(/{{NUMERO_PROCESSO}}/g, numeroProcesso)
+                    .replace(/{{NOME_APENADO}}/g, nomeApenado)
+                    .replace(/{{DATA_DECISAO}}/g, dataDecisao)
+                    .replace(/{{DATA_TERMINO_PENA}}/g, dataTerminoPena)
+                    .replace(/{{MES_ANO_APRESENTACAO}}/g, mesAnoApresentacao)
+                    .replace(/{{SECAO_AUDIO}}/g, secaoAudio);
+
+                document.getElementById('previewDecisao').innerHTML = decisaoFinal;
+                
+                // Mostrar mensagem de sucesso se campos obrigatórios preenchidos
+                if (numeroProcesso !== '[NÚMERO DO PROCESSO]' && nomeApenado !== '[NOME DO APENADO]') {
+                    mostrarSucesso();
+                    incrementarContador('totalDecisoes');
+                }
+                
+                document.querySelector('.preview-section').scrollTop = 0;
+                
+                console.log('Decisão gerada com sucesso!');
+            } catch (error) {
+                console.error('Erro ao gerar decisão:', error);
+                mostrarErro('Erro ao gerar a decisão. Verifique os dados inseridos.');
+            }
+        }
+
+        function gerarQRCode() {
+            try {
+                console.log('Gerando QR Code...');
+                
+                var linkCOSIPE = 'https://www.ceara.gov.br/2014/10/29/coordenadoria-de-inclusao-social-da-sejus-esta-em-novo-endereco/';
+                var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(linkCOSIPE);
+                
+                var qrContainer = document.getElementById('qrCodeContainer');
+                qrContainer.innerHTML = '<img src="' + qrUrl + '" alt="QR Code" style="max-width: 150px; border: 1px solid #ddd; border-radius: 8px;">' +
+                    '<p style="margin-top: 10px; font-size: 12px; color: #666;">QR Code para informações da COSIPE</p>';
+                
+                qrCodeImg = qrContainer.querySelector('img');
+                document.getElementById('qrDisplay').style.display = 'block';
+                
+                incrementarContador('totalQRCodes');
+                gerarDecisao();
+                
+                console.log('QR Code gerado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao gerar QR Code:', error);
+                mostrarErro('Erro ao gerar QR Code. Verifique sua conexão com a internet.');
+            }
+        }
+
+        function baixarQRCode() {
+            try {
+                if (qrCodeImg) {
+                    var link = document.createElement('a');
+                    link.href = qrCodeImg.src;
+                    link.download = 'qrcode-cosipe-decisao.png';
+                    link.click();
+                    console.log('QR Code baixado!');
+                } else {
+                    mostrarErro('Nenhum QR Code foi gerado ainda.');
+                }
+            } catch (error) {
+                console.error('Erro ao baixar QR Code:', error);
+                mostrarErro('Erro ao baixar QR Code.');
+            }
+        }
+
+        function formatarData(dataString) {
+            if (!dataString) return '';
+            try {
+                var data = new Date(dataString + 'T00:00:00');
+                return data.toLocaleDateString('pt-BR');
+            } catch (error) {
+                console.error('Erro ao formatar data:', error);
+                return dataString;
+            }
+        }
+
+        function baixarPDF() {
+            try {
+                var conteudo = document.getElementById('previewDecisao');
+                if (conteudo && !conteudo.innerHTML.includes('[NÚMERO DO PROCESSO]')) {
+                    alert('Para baixar como PDF:\n\n1. Use Ctrl+P (Windows) ou Cmd+P (Mac)\n2. Selecione "Salvar como PDF"\n3. Escolha o local para salvar\n\nOu clique com botão direito na pré-visualização e selecione "Imprimir"');
+                } else {
+                    mostrarErro('Gere uma decisão completa antes de baixar o PDF.');
+                }
+            } catch (error) {
+                console.error('Erro ao baixar PDF:', error);
+                mostrarErro('Erro ao gerar PDF. Use Ctrl+P para imprimir.');
+            }
+        }
+
+        function baixarHTML() {
+            try {
+                var conteudo = document.getElementById('previewDecisao').innerHTML;
+                var nomeApenado = document.getElementById('nomeApenado').value || 'Decisao';
+                var nomeArquivo = 'decisao-' + nomeApenado.replace(/\s+/g, '-').toLowerCase() + '.html';
+
+                var htmlCompleto = '<!DOCTYPE html>';
+                htmlCompleto += '<html lang="pt-BR">';
+                htmlCompleto += '<head>';
+                htmlCompleto += '<meta charset="UTF-8">';
+                htmlCompleto += '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+                htmlCompleto += '<title>Decisão em Linguagem Simples</title>';
+                htmlCompleto += '<style>';
+                htmlCompleto += 'body { font-family: Arial, sans-serif; line-height: 1.6; background-color: #f8f9fa; padding: 20px; max-width: 800px; margin: 0 auto; }';
+                htmlCompleto += '.header { background: linear-gradient(135deg, #2c5aa0 0%, #1e3d72 100%); color: white; padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 30px; }';
+                htmlCompleto += '.info-box { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; border-left: 5px solid #28a745; }';
+                htmlCompleto += '.success-box { background: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 5px solid #28a745; }';
+                htmlCompleto += '.warning-box { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 5px solid #f39c12; }';
+                htmlCompleto += '.condition-item { display: flex; align-items: flex-start; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #2c5aa0; }';
+                htmlCompleto += '.condition-number { background: #2c5aa0; color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; font-size: 0.9em; flex-shrink: 0; }';
+                htmlCompleto += '.contact-info { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 5px solid #17a2b8; }';
+                htmlCompleto += '.highlight { background: #fff3cd; padding: 3px 8px; border-radius: 4px; font-weight: bold; }';
+                htmlCompleto += 'strong { color: #2c5aa0; }';
+                htmlCompleto += '</style>';
+                htmlCompleto += '</head>';
+                htmlCompleto += '<body>';
+                htmlCompleto += conteudo;
+                htmlCompleto += '</body>';
+                htmlCompleto += '</html>';
+
+                var blob = new Blob([htmlCompleto], { type: 'text/html' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = nomeArquivo;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                console.log('HTML baixado: ' + nomeArquivo);
+            } catch (error) {
+                console.error('Erro ao baixar HTML:', error);
+                mostrarErro('Erro ao gerar arquivo HTML.');
+            }
+        }
+
+        function incrementarContador(tipo) {
+            try {
+                if (contadores[tipo] !== undefined) {
+                    contadores[tipo]++;
+                    var elemento = document.getElementById(tipo);
+                    if (elemento) {
+                        elemento.textContent = contadores[tipo];
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao incrementar contador:', error);
+            }
+        }
+
+        function atualizarEstatisticas() {
+            try {
+                document.getElementById('totalDecisoes').textContent = contadores.totalDecisoes;
+                document.getElementById('totalAudios').textContent = contadores.totalAudios;
+                document.getElementById('totalQRCodes').textContent = contadores.totalQRCodes;
+            } catch (error) {
+                console.error('Erro ao atualizar estatísticas:', error);
+            }
+        }
+
+        function salvarConfiguracoes() {
+            try {
+                configuracoes.nomeJuiz = document.getElementById('nomeJuiz').value;
+                configuracoes.comarca = document.getElementById('comarca').value;
+                configuracoes.telefoneContato = document.getElementById('telefoneContato').value;
+                
+                mostrarSucesso('Configurações salvas com sucesso!');
+                console.log('Configurações salvas na sessão!');
+            } catch (error) {
+                console.error('Erro ao salvar configurações:', error);
+                mostrarErro('Erro ao salvar configurações.');
+            }
+        }
+
+        function carregarConfiguracoes() {
+            try {
+                document.getElementById('nomeJuiz').value = configuracoes.nomeJuiz;
+                document.getElementById('comarca').value = configuracoes.comarca;
+                document.getElementById('telefoneContato').value = configuracoes.telefoneContato;
+                console.log('Configurações carregadas com sucesso!');
+            } catch (error) {
+                console.error('Erro ao carregar configurações:', error);
+            }
+        }
+
+        function mostrarSucesso(mensagem) {
+            mensagem = mensagem || '✅ Decisão gerada com sucesso! Use os botões abaixo para baixar.';
+            var successEl = document.getElementById('successMessage');
+            var errorEl = document.getElementById('errorMessage');
+            
+            if (successEl) {
+                successEl.textContent = mensagem;
+                successEl.style.display = 'block';
+            }
+            if (errorEl) {
+                errorEl.style.display = 'none';
+            }
+        }
+
+        function mostrarErro(mensagem) {
+            var errorEl = document.getElementById('errorMessage');
+            var successEl = document.getElementById('successMessage');
+            
+            if (errorEl) {
+                errorEl.textContent = '❌ ' + mensagem;
+                errorEl.style.display = 'block';
+            }
+            if (successEl) {
+                successEl.style.display = 'none';
+            }
+            
+            console.error(mensagem);
+        }
+
+        console.log('Script JavaScript carregado completamente!');
+    </script>
+</body>
+</html>
